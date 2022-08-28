@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="da">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bistro Babushka</title>
+
+    <style>
+      #forside {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      img {
+        max-width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="forside">
+      <template>
+        <article>
+          <img class="billede" src="" alt="" />
+          <h2 class="navn"></h2>
+          <h3 class="kortbeskrivelse"></h3>
+          <p class="langbeskrivelse"></p>
+        </article>
+      </template>
+    </main>
+
+    <script>
+      const url = "https://babushka-dd8a.restdb.io/rest/menu"; //endpoint el. URL
+      const key = { headers: { "x-apikey": "600ec2fb1346a1524ff12de4" } }; // API nøgle
+
+      async function hentData() {
+        const rensponse = await fetch(url, key);
+        const food = await rensponse.json();
+        console.log("FOOD", food);
+        vis(food);
+      }
+
+      function vis(food) {
+        console.log(food);
+        const forside = document.querySelector("#forside");
+        const skabelon = document.querySelector("template").content;
+        food.forEach((madvarer) => {
+          const klon = skabelon.cloneNode(true);
+          klon.querySelector("img").src = "billeder/" + madvarer.billede; //referer til kolonnernes navne i restdb
+          klon.querySelector("img").alt = madvarer.billede;
+          klon.querySelector(".navn").textContent = madvarer.billedenavn;
+          klon.querySelector(".kortbeskrivelse").textContent = madvarer.kortbeskrivelse;
+          klon.querySelector(".langbeskrivelse").textContent = madvarer.langbeskrivelse;
+          klon.querySelector("article").style.borderRadius = "lem";
+          forside.appendChild(klon);
+        });
+      }
+
+      hentData(); //loop
+    </script>
+  </body>
+</html>
